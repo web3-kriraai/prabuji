@@ -1,0 +1,106 @@
+/**
+ * Spiritual Website Theme - Color System
+ * 
+ * This file contains all color variables for the entire website.
+ * To change the theme, simply modify the values in the :root section.
+ * All components reference these variables for consistent theming.
+ */
+
+:root {
+    /* Primary Color Palette */
+    --color-background: #FAF7F2;
+    /* Off-white / Light cream */
+    --color-primary: #F4A261;
+    /* Saffron / Soft orange */
+    --color-secondary: #7B1E1E;
+    /* Deep maroon */
+    --color-accent: #C9A227;
+    /* Gold */
+    --color-text: #3A2F2F;
+    /* Dark brown / Charcoal */
+
+    /* New Palette */
+    --color-jet-black: #022B3A;
+    --color-teal: #1F7A8C;
+    --color-pale-sky: #BFDBF7;
+    --color-lavender: #E1E5F2;
+    --color-white: #FFFFFF;
+
+    /* Derived Colors */
+    --color-text-light: rgba(58, 47, 47, 0.7);
+    --color-text-lighter: rgba(58, 47, 47, 0.5);
+    --color-white: #FFFFFF;
+    --color-overlay: rgba(250, 247, 242, 0.95);
+
+    /* Gradient Variations */
+    --gradient-primary: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    --gradient-secondary: linear-gradient(135deg, var(--color-secondary), var(--color-primary));
+    --gradient-subtle: linear-gradient(180deg, var(--color-background), rgba(250, 247, 242, 0.8));
+
+    /* Shadow System */
+    --shadow-sm: 0 2px 8px rgba(58, 47, 47, 0.08);
+    --shadow-md: 0 4px 16px rgba(58, 47, 47, 0.12);
+    --shadow-lg: 0 8px 32px rgba(58, 47, 47, 0.16);
+    --shadow-glow: 0 0 20px rgba(244, 162, 97, 0.3);
+
+    /* Spacing System */
+    --spacing-xs: 0.25rem;
+    /* 4px */
+    --spacing-sm: 0.5rem;
+    /* 8px */
+    --spacing-md: 1rem;
+    /* 16px */
+    --spacing-lg: 1.5rem;
+    /* 24px */
+    --spacing-xl: 2rem;
+    /* 32px */
+    --spacing-2xl: 3rem;
+    /* 48px */
+
+    /* Typography */
+    --font-primary: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-accent: 'Playfair Display', Georgia, serif;
+
+    --font-size-xs: 0.75rem;
+    /* 12px */
+    --font-size-sm: 0.875rem;
+    /* 14px */
+    --font-size-base: 1rem;
+    /* 16px */
+    --font-size-lg: 1.125rem;
+    /* 18px */
+    --font-size-xl: 1.25rem;
+    /* 20px */
+    --font-size-2xl: 1.5rem;
+    /* 24px */
+    --font-size-3xl: 2rem;
+    /* 32px */
+
+    /* Border Radius */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-full: 9999px;
+
+    /* Transitions */
+    --transition-fast: 0.15s ease;
+    --transition-base: 0.3s ease;
+    --transition-slow: 0.5s ease;
+    --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Z-Index Layers */
+    --z-base: 1;
+    --z-dropdown: 100;
+    --z-sticky: 200;
+    --z-modal: 1000;
+    --z-tooltip: 1100;
+}
+
+/* Dark Theme (Optional - for future use) */
+[data-theme="dark"] {
+    --color-background: #2A2520;
+    --color-text: #FAF7F2;
+    --color-text-light: rgba(250, 247, 242, 0.7);
+    --color-overlay: rgba(42, 37, 32, 0.95);
+}

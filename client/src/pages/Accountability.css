@@ -1,0 +1,588 @@
+/* Accountability Page Styles */
+.accountability-page {
+    /* min-height: 100vh; Removed to allow footer to sit naturally */
+    background: linear-gradient(135deg, #FAF7F2 0%, #E1E5F2 100%);
+    padding: 2rem 0;
+    /* added padding top/bottom */
+    position: relative;
+    /* overflow: hidden; Removed to allow page scrolling */
+}
+
+.accountability-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.accountability-layout {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+}
+
+/* ... existing code ... */
+
+.accountability-swiper-section {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 5rem;
+    /* Increased horizontal padding for slider margins */
+    position: sticky;
+    /* Make swiper sticky */
+    top: 2rem;
+    /* Add space from top when sticky */
+    height: 100vh;
+    /* Full viewport height for sticky behavior */
+    max-height: 100vh;
+    /* Prevent overflow */
+    align-self: flex-start;
+    /* Align to top of flex container */
+}
+
+.accountability-form-section {
+    flex: 1;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Removed custom scrollbar styles to allow page scroll */
+}
+
+/* Swiper Styles */
+.swiper {
+    width: 400px;
+    /* Increased for better image display */
+    height: 500px;
+    /* Increased for better image display */
+}
+
+.swiper-slide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 18px;
+    font-size: 22px;
+    font-weight: bold;
+    color: #fff;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    background: #fff;
+}
+
+.swiper-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 18px;
+}
+
+.swiper-slide:nth-child(1n) {
+    background-color: rgb(206, 17, 17);
+}
+
+.swiper-slide:nth-child(2n) {
+    background-color: rgb(0, 140, 255);
+}
+
+.swiper-slide:nth-child(3n) {
+    background-color: rgb(10, 184, 111);
+}
+
+.swiper-slide:nth-child(4n) {
+    background-color: rgb(211, 122, 7);
+}
+
+.swiper-slide:nth-child(5n) {
+    background-color: rgb(118, 163, 12);
+}
+
+.swiper-slide:nth-child(6n) {
+    background-color: rgb(180, 10, 47);
+}
+
+.swiper-slide:nth-child(7n) {
+    background-color: rgb(35, 99, 19);
+}
+
+.swiper-slide:nth-child(8n) {
+    background-color: rgb(0, 68, 255);
+}
+
+.swiper-slide:nth-child(9n) {
+    background-color: rgb(218, 12, 218);
+}
+
+.swiper-slide:nth-child(10n) {
+    background-color: rgb(54, 94, 77);
+}
+
+
+/* Header Styles */
+.accountability-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.accountability-header h1 {
+    font-family: var(--font-accent);
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    color: var(--color-jet-black);
+    margin-bottom: 0.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--color-jet-black) 0%, var(--color-teal) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.accountability-header p {
+    font-size: 1.125rem;
+    color: var(--color-text-light);
+    font-weight: 400;
+}
+
+/* Form Styles */
+.accountability-form {
+    background: var(--color-white);
+    border-radius: var(--radius-xl);
+    padding: 2rem;
+    /* Decreased padding */
+    box-shadow: 0 10px 40px rgba(2, 43, 58, 0.08);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(191, 219, 247, 0.3);
+    width: 100%;
+    max-width: 750px;
+    /* Increased width for better form display */
+    /* margin-right: 4rem; Removed to correct alignment */
+}
+
+/* Form Group */
+.form-group {
+    margin-bottom: 1.25rem;
+    /* Decreased margin */
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.9rem;
+    /* Slightly smaller font */
+    font-weight: 600;
+    color: var(--color-jet-black);
+    margin-bottom: 0.5rem;
+    /* Decreased margin */
+    letter-spacing: 0.3px;
+}
+
+.required {
+    color: #FF6B6B;
+    margin-left: 2px;
+}
+
+/* Input Styles */
+.form-group input[type="date"],
+.form-group input[type="time"],
+.form-group textarea {
+    width: 100%;
+    padding: 0.6rem 1rem;
+    /* Decreased padding */
+    border: 2px solid var(--color-lavender);
+    border-radius: 10px;
+    /* Slightly smaller radius */
+    font-size: 0.95rem;
+    /* Slightly smaller font */
+    font-family: var(--font-primary);
+    color: var(--color-jet-black);
+    background: var(--color-white);
+    transition: all var(--transition-base);
+    outline: none;
+}
+
+.form-group input[type="date"]:focus,
+.form-group input[type="time"]:focus,
+.form-group textarea:focus {
+    border-color: var(--color-teal);
+    box-shadow: 0 0 0 4px rgba(31, 122, 140, 0.1);
+    transform: translateY(-1px);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+    /* Decreased min-height */
+    line-height: 1.5;
+}
+
+.form-group textarea::placeholder {
+    color: var(--color-text-lighter);
+}
+
+/* MUI Component Styling */
+.form-group .MuiTextField-root {
+    width: 100%;
+}
+
+.form-group .MuiOutlinedInput-root,
+.form-group .MuiPickersInputBase-root {
+    border-radius: 10px !important;
+    background: var(--color-white);
+    font-family: var(--font-primary);
+}
+
+.form-group .MuiOutlinedInput-notchedOutline {
+    border-color: var(--color-lavender);
+    border-width: 2px;
+    border-radius: 10px !important;
+}
+
+.form-group .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+    border-color: var(--color-teal);
+}
+
+.form-group .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: var(--color-teal);
+    border-width: 2px;
+    box-shadow: 0 0 0 4px rgba(31, 122, 140, 0.1);
+}
+
+.form-group .MuiInputBase-input {
+    padding: 0.6rem 1rem !important;
+    /* Force decreased padding for MUI */
+    font-size: 0.95rem;
+    color: var(--color-jet-black);
+}
+
+.form-group .MuiSvgIcon-root {
+    color: var(--color-teal);
+    font-size: 1.25rem;
+    /* Slightly smaller icon */
+}
+
+.form-group .MuiInputAdornment-root {
+    margin-left: 0;
+}
+
+.form-group .MuiIconButton-root {
+    color: var(--color-teal);
+    padding: 6px;
+    /* Smaller button padding */
+}
+
+.form-group .MuiIconButton-root:hover {
+    background-color: rgba(31, 122, 140, 0.08);
+}
+
+.form-group textarea {
+    border-radius: 10px !important;
+}
+
+/* Additional MUI Picker specific styling */
+.MuiPickersInputBase-root,
+.MuiPickersInputBase-root .MuiOutlinedInput-notchedOutline {
+    border-radius: 10px !important;
+}
+
+
+/* Slider Styles */
+.slider-group {
+    position: relative;
+    padding-top: 5px;
+}
+
+.slider {
+    width: 100%;
+    height: 6px;
+    /* Thinner line */
+    border-radius: var(--radius-full);
+    background: var(--color-lavender);
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+    transition: all var(--transition-base);
+    cursor: pointer;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    /* Smaller thumb */
+    height: 20px;
+    border-radius: 50%;
+    background: var(--color-teal);
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(31, 122, 140, 0.3);
+    transition: all var(--transition-base);
+}
+
+.slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 6px 16px rgba(31, 122, 140, 0.4);
+}
+
+.slider::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--color-teal);
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 4px 12px rgba(31, 122, 140, 0.3);
+    transition: all var(--transition-base);
+}
+
+.slider::-moz-range-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 6px 16px rgba(31, 122, 140, 0.4);
+}
+
+.slider-value {
+    display: inline-block;
+    margin-top: 0.75rem;
+    font-size: 0.875rem;
+    color: var(--color-teal);
+    font-weight: 600;
+}
+
+/* Hearing Slider Special Styling */
+.hearing-section {
+    background: linear-gradient(135deg, rgba(191, 219, 247, 0.1) 0%, rgba(225, 229, 242, 0.1) 100%);
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+    border: 2px solid rgba(191, 219, 247, 0.3);
+}
+
+.hearing-slider-container {
+    margin-bottom: 1.5rem;
+}
+
+.hearing-slider {
+    height: 10px;
+}
+
+/* Emoji Feedback */
+.emoji-feedback {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: var(--color-white);
+    border-radius: var(--radius-xl);
+    border: 3px solid;
+    margin-top: 1.5rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.emoji-icon {
+    font-size: 5rem;
+    line-height: 1;
+    margin-bottom: 1rem;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
+}
+
+.emoji-label {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+/* Radio Group */
+.radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.radio-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    padding: 1rem 1.25rem;
+    border: 2px solid var(--color-lavender);
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-base);
+    background: var(--color-white);
+    width: fit-content;
+}
+
+.radio-label:hover {
+    border-color: var(--color-teal);
+    background: rgba(191, 219, 247, 0.1);
+    transform: translateY(-2px);
+}
+
+.radio-label input[type="radio"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: var(--color-teal);
+    margin: 0;
+    flex-shrink: 0;
+    vertical-align: middle;
+}
+
+.radio-label input[type="radio"]:checked+span {
+    color: var(--color-teal);
+    font-weight: 600;
+}
+
+.radio-label span {
+    font-size: 1rem;
+    color: var(--color-jet-black);
+    transition: all var(--transition-base);
+    line-height: 20px;
+    white-space: nowrap;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Checkbox Group */
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    padding: 1rem 1.25rem;
+    border: 2px solid var(--color-lavender);
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-base);
+    background: var(--color-white);
+    width: fit-content;
+}
+
+.checkbox-label:hover {
+    border-color: var(--color-teal);
+    background: rgba(191, 219, 247, 0.1);
+    transform: translateY(-2px);
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: var(--color-teal);
+    margin: 0;
+    flex-shrink: 0;
+    vertical-align: middle;
+}
+
+.checkbox-label input[type="checkbox"]:checked+span {
+    color: var(--color-teal);
+    font-weight: 600;
+}
+
+.checkbox-label span {
+    font-size: 1rem;
+    color: var(--color-jet-black);
+    transition: all var(--transition-base);
+    line-height: 20px;
+    white-space: nowrap;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Submit Button */
+.submit-btn {
+    width: 100%;
+    padding: 1.25rem 2rem;
+    background: linear-gradient(135deg, var(--color-teal) 0%, #1a6a7a 100%);
+    color: var(--color-white);
+    border: none;
+    border-radius: var(--radius-lg);
+    font-size: 1.125rem;
+    font-weight: 700;
+    font-family: var(--font-primary);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    box-shadow: 0 6px 20px rgba(31, 122, 140, 0.3);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-top: 2rem;
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(31, 122, 140, 0.4);
+}
+
+.submit-btn:active {
+    transform: translateY(0);
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+    .accountability-layout {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .accountability-swiper-section {
+        margin-bottom: 2rem;
+        position: static;
+        width: 100%;
+    }
+
+    .accountability-form-section {
+        width: 100%;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .accountability-page {
+        padding: 2rem 1rem;
+    }
+
+    .accountability-form {
+        padding: 2rem 1.5rem;
+    }
+
+    .accountability-header h1 {
+        font-size: 2rem;
+    }
+
+    .radio-group {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .emoji-icon {
+        font-size: 4rem;
+    }
+
+    .emoji-label {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .accountability-form {
+        padding: 1.5rem 1rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .hearing-section {
+        padding: 1rem;
+    }
+
+    .emoji-feedback {
+        padding: 1.5rem;
+    }
+
+    .emoji-icon {
+        font-size: 3.5rem;
+    }
+}
