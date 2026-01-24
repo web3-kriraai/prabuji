@@ -11,6 +11,7 @@ app.use(express.json());
 console.log('Loading routes...');
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/users', require('./routes/userRoutes'));
+app.use('/api/accountability', require('./routes/accountabilityRoutes'));
 console.log('Routes loaded');
 
 app.get('/', (req, res) => {

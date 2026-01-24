@@ -1,10 +1,12 @@
 /**
  * Navbar Component
- * Production-ready navigation with responsive design
+ * Production-ready navigation with responsive design and authentication
  */
 
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import LogoutButton from './LogoutButton';
 import logoImage from '../assets/image/Gaurangas-Group-Logo.png';
 import '../styles/navbar.css';
 
@@ -12,7 +14,10 @@ const Navbar = () => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [showUserMenu, setShowUserMenu] = useState(false);
     const location = useLocation();
+    const navigate = useNavigate();
+    const { user, logout, loading } = useAuth();
 
     // Handle scroll effect
     useEffect(() => {
@@ -28,6 +33,7 @@ const Navbar = () => {
     useEffect(() => {
         setIsMobileMenuOpen(false);
         setIsDropdownOpen(false);
+        setShowUserMenu(false);
     }, [location]);
 
     // Prevent body scroll when mobile menu is open
@@ -47,36 +53,25 @@ const Navbar = () => {
         setIsDropdownOpen(!isDropdownOpen);
     };
 
+    const toggleUserMenu = () => {
+        setShowUserMenu(!showUserMenu);
+    };
+
     const isActive = (path) => {
         return location.pathname === path;
     };
 
-    // Get user from localStorage - initialized to null to avoid hydration mismatch
-    const [user, setUser] = useState(null);
-    const [isClient, setIsClient] = useState(false);
-
-    // Set isClient to true after mount to avoid hydration mismatch
-    useEffect(() => {
-        setIsClient(true);
-    }, []);
-
-    useEffect(() => {
-        if (isClient) {
-            const userData = localStorage.getItem('user');
-            if (userData) {
-                setUser(JSON.parse(userData));
-            }
+    const handleDashboardClick = () => {
+        if (user?.role === 'admin') {
+            navigate('/admin/dashboard');
+        } else if (user?.role === 'counselor') {
+            navigate('/counselor/dashboard');
+        } else {
+            navigate('/dashboard');
         }
-    }, [location, isClient]);
-
-    const handleLogout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        setUser(null);
-        window.location.href = '/';
     };
 
-    // Base navigation items - immutable
+    // Base navigation items
     const baseNavigationItems = [
         { path: '/', label: 'Home' },
         { path: '/about', label: 'About Us' },
@@ -92,19 +87,20 @@ const Navbar = () => {
         { path: '/blog', label: 'Blog' },
     ];
 
-    // Get dashboard item based on role - only on client side
-    const getDashboardItem = () => {
-        if (!isClient || !user) return null;
-
-        if (user.role === 'admin') {
-            return { path: '/admin-dashboard', label: 'Admin Dashboard' };
-        } else if (user.role === 'counselor') {
-            return { path: '/counselor-dashboard', label: 'Counselor Dashboard' };
+    // Get role badge color
+    const getRoleBadgeColor = () => {
+        if (!user) return '';
+        switch (user.role) {
+            case 'admin':
+                return 'bg-lavender text-white';
+            case 'counselor':
+                return 'bg-soft-green text-gray-800';
+            case 'user':
+                return 'bg-sky-blue text-gray-800';
+            default:
+                return 'bg-gray-200 text-gray-800';
         }
-        return null;
     };
-
-    const dashboardItem = getDashboardItem();
 
     // Render a single navigation item
     const renderNavItem = (item, index) => {
@@ -186,35 +182,56 @@ const Navbar = () => {
 
                 {/* Navigation Menu */}
                 <ul className={`navbar-menu ${isMobileMenuOpen ? 'active' : ''}`}>
-                    {baseNavigationItems.slice(0, -1).map((item, index) => renderNavItem(item, index))}
-
-                    {/* Dashboard item - conditionally rendered */}
-                    {dashboardItem && (
-                        <li
-                            style={{ '--i': baseNavigationItems.length - 1 }}
-                            className="navbar-menu-item"
-                        >
-                            <Link
-                                to={dashboardItem.path}
-                                className={`navbar-menu-link ${isActive(dashboardItem.path) ? 'active' : ''}`}
-                            >
-                                {dashboardItem.label}
-                            </Link>
-                        </li>
-                    )}
-
-                    {/* Last item (Blog) */}
-                    {renderNavItem(baseNavigationItems[baseNavigationItems.length - 1], baseNavigationItems.length - 1)}
+                    {baseNavigationItems.map((item, index) => renderNavItem(item, index))}
                 </ul>
 
-                {/* Login Button or User Info */}
+                {/* Login Button or User Profile */}
                 <div className="navbar-cta">
-                    {user ? (
-                        <div className="navbar-user-info">
-                            <span className="navbar-user-name">{user.name}</span>
-                            <button onClick={handleLogout} className="navbar-logout-button">
-                                Logout
+                    {loading ? (
+                        // Show nothing or a small loader while checking auth
+                        <div className="w-24 h-10"></div>
+                    ) : user ? (
+                        <div className="relative">
+                            <button
+                                onClick={toggleUserMenu}
+                                className="flex items-center gap-3 px-4 py-2 rounded-full bg-white border border-gray-200 hover:shadow-md transition-all duration-300"
+                            >
+                                <div className={`w-9 h-9 rounded-full ${getRoleBadgeColor()} flex items-center justify-center font-semibold text-sm`}>
+                                    {user.name.charAt(0).toUpperCase()}
+                                </div>
+                                <div className="hidden md:block text-left">
+                                    <p className="text-sm font-semibold text-gray-900">{user.name}</p>
+                                    <p className="text-xs text-gray-500 capitalize">{user.role}</p>
+                                </div>
+                                <svg
+                                    className={`w-4 h-4 text-gray-600 transition-transform ${showUserMenu ? 'rotate-180' : ''}`}
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                                </svg>
                             </button>
+
+                            {/* User Dropdown Menu */}
+                            {showUserMenu && (
+                                <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-xl border border-gray-100 py-2 z-50">
+                                    <div className="px-4 py-3 border-b border-gray-100">
+                                        <p className="text-sm font-semibold text-gray-900">{user.name}</p>
+                                        <p className="text-xs text-gray-500">{user.email}</p>
+                                        <span className={`inline-block mt-2 px-3 py-1 rounded-full text-xs font-semibold ${getRoleBadgeColor()}`}>
+                                            {user.role}
+                                        </span>
+                                    </div>
+                                    <button
+                                        onClick={handleDashboardClick}
+                                        className="w-full text-left px-4 py-2 hover:bg-gray-50 transition-colors text-sm text-gray-700 font-medium"
+                                    >
+                                        📊 My Dashboard
+                                    </button>
+                                    <LogoutButton className="w-full text-left px-4 py-2 hover:bg-red-50 transition-colors text-sm text-red-600 font-medium rounded-lg" />
+                                </div>
+                            )}
                         </div>
                     ) : (
                         <Link to="/login" className="navbar-cta-button">
