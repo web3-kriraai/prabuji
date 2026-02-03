@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Plus,
@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import api from '../lib/api';
 
-const ICONS = ['🛕', '🏔️', '🕉️', '🕯️', '🚋', '🚌', '🧘', '👣', '🌸', '🌅'];
+const ICONS = ['ðŸ›•', 'ðŸ”ï¸', 'ðŸ•‰ï¸', 'ðŸ•¯ï¸', 'ðŸš‹', 'ðŸšŒ', 'ðŸ§˜', 'ðŸ‘£', 'ðŸŒ¸', 'ðŸŒ…'];
 
 const TirthYatraManagement = () => {
     const [yatras, setYatras] = useState([]);
@@ -27,12 +27,12 @@ const TirthYatraManagement = () => {
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const [notification, setNotification] = useState({ type: '', message: '' });
-    const [imageMode, setImageMode] = useState('url'); // 'url' or 'upload'
+    // const [imageMode, setImageMode] = useState('url'); // Removed: Only upload supported now
     const [selectedFile, setSelectedFile] = useState(null);
 
     const initialFormState = {
         title: '',
-        icon: '🛕',
+        icon: 'ðŸ›•',
         image: '',
         date: '',
         startDate: '',
@@ -133,7 +133,13 @@ const TirthYatraManagement = () => {
 
     const handleFileChange = (e) => {
         if (e.target.files[0]) {
-            setSelectedFile(e.target.files[0]);
+            const file = e.target.files[0];
+            setSelectedFile(file);
+            // Create a preview URL immediately so user sees the change
+            setFormData(prev => ({
+                ...prev,
+                image: URL.createObjectURL(file)
+            }));
         }
     };
 
@@ -209,7 +215,7 @@ const TirthYatraManagement = () => {
 
     const addActivity = (dayIndex) => {
         const newItinerary = [...(formData.itinerary || [])];
-        newItinerary[dayIndex].schedule.push({ time: '', activity: '', description: '', icon: '🛕' });
+        newItinerary[dayIndex].schedule.push({ time: '', activity: '', description: '', icon: 'ðŸ›•' });
         setFormData({ ...formData, itinerary: newItinerary });
     };
 
@@ -362,34 +368,18 @@ const TirthYatraManagement = () => {
         data.append('excludes', JSON.stringify(formData.excludes || []));
 
         // 3. Append Image LAST to ensure Multer parses body fields first
-        if (imageMode === 'upload' && selectedFile) {
+        // 3. Append Image LAST
+        if (selectedFile) {
             data.append('image', selectedFile);
-            // If uploading a file, clear any 'image' text field that might be sent as body
-            // Actually, if we append 'image' as file, we shouldn't also append 'image' as string.
-            // But we didn't append image string above in step 1 loop.
-        } else if (imageMode === 'url' && formData.image) {
-            data.append('image', formData.image);
-        } else if (imageMode === 'url' && !formData.image) {
-            // Explicitly send empty string if user cleared it?
-            data.append('image', '');
         }
+        // If no file selected, we do not append 'image', so backend preserves existing URL.
 
         try {
-            const config = {};
-            // actually we should NOT set this manually for FormData, let axios handle it
-            // checking if leaving it empty works or if we should just omit headers completely.
-            // Axios docs say: "When data is a FormData object, axios sets Content-Type to multipart/form-data automatically"
-            // So we can just pass empty config or omit it. 
-            // However, usually existing code might have authorization headers injected via interceptors.
-            // The `api` instance (likely axios instance) already handles authn.
-            // So I will just remove the Content-Type override.
-            // The cleanest way is to remove the line defining config and pass empty object or just rely on defaults, 
-            // BUT wait, `api` is imported from `../lib/api`. 
-            // If I remove `const config = ...`, I need to update the api calls below.
-
-            // Let's just remove the header property from the config object, but keep the object if needed (though here it only had that header).
-            // Actually, simply removing the header line is best.
-
+            const config = {
+                headers: {
+                    'Content-Type': undefined
+                }
+            };
 
             if (editingId) {
                 await api.put(`/tirthyatra/${editingId}`, data, config);
@@ -439,9 +429,19 @@ const TirthYatraManagement = () => {
             return [];
         };
 
+        // Ensure nested fields are defined to validate 'controlled' inputs
+        const processedTrainInfo = (safeParse(yatra.trainInfo) || []).map(t => ({
+            ...t,
+            classes: (t.classes || []).map(c => ({ ...c, price: c.price ?? '' }))
+        }));
+        const processedPackages = (safeParse(yatra.packages) || []).map(p => ({
+            ...p,
+            pricing: (p.pricing || []).map(pr => ({ ...pr, cost: pr.cost ?? '', perPerson: pr.perPerson ?? '' }))
+        }));
+
         setFormData({
             title: yatra.title || '',
-            icon: yatra.icon || '🛕',
+            icon: yatra.icon || 'ðŸ›•',
             image: yatra.image || '',
             date: yatra.date || '',
             duration: yatra.duration || '',
@@ -451,16 +451,16 @@ const TirthYatraManagement = () => {
             description: yatra.description || '',
             ticketPrice: yatra.ticketPrice || '',
             whatsappLink: yatra.whatsappLink || '',
-            trainInfo: safeParse(yatra.trainInfo) || [],
+            trainInfo: processedTrainInfo,
             itinerary: safeParse(yatra.itinerary) || [],
-            packages: safeParse(yatra.packages) || [],
+            packages: processedPackages,
             instructions: safeParseArray(yatra.instructions),
             includes: safeParseArray(yatra.includes),
             excludes: safeParseArray(yatra.excludes),
             startDate: yatra.startDate ? yatra.startDate.split('T')[0] : '',
             endDate: yatra.endDate ? yatra.endDate.split('T')[0] : ''
         });
-        setImageMode('url'); // Default to URL. If user wants to upload new one, they will switch.
+        // setImageMode('url'); // Removed
         // Ensure image field is set in formData if it exists, so if they save without changing, we send the URL.
         if (yatra.image) {
             setFormData(prev => ({ ...prev, image: yatra.image }));
@@ -487,7 +487,7 @@ const TirthYatraManagement = () => {
         setEditingId(null);
         setFormData(initialFormState);
         setSelectedFile(null);
-        setImageMode('url');
+        // setImageMode('url');
     };
 
     return (
@@ -655,53 +655,42 @@ const TirthYatraManagement = () => {
                                         </div>
                                     </div>
 
-                                    {/* Image Upload/URL */}
+                                    {/* Image Upload Only */}
+                                    {/* Image Upload Only */}
                                     <div className="space-y-4">
                                         <label className="text-sm font-semibold text-gray-700">Yatra Image</label>
-                                        <div className="flex gap-4 mb-2">
-                                            <button
-                                                type="button"
-                                                onClick={() => setImageMode('url')}
-                                                className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${imageMode === 'url' ? 'bg-orange-100 text-orange-700' : 'bg-gray-100 text-gray-600'
-                                                    }`}
-                                            >
-                                                <Link size={16} /> Image URL
-                                            </button>
-                                        </div>
 
-                                        {imageMode === 'url' ? (
-                                            <div className="flex gap-2">
-                                                <input
-                                                    name="image"
-                                                    value={formData.image}
-                                                    onChange={handleInputChange}
-                                                    placeholder="https://example.com/image.jpg"
-                                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-orange-500 outline-none"
-                                                />
-                                                {formData.image && (
-                                                    <div className="w-12 h-12 rounded-lg overflow-hidden border border-gray-200 bg-gray-50 flex-shrink-0">
-                                                        <img src={formData.image} alt="Preview" className="w-full h-full object-cover" />
+                                        <div className="flex flex-col md:flex-row gap-6 items-start">
+                                            {/* Existing Image Preview */}
+                                            {formData.image && (
+                                                <div className="flex-shrink-0">
+                                                    <p className="text-xs text-gray-500 mb-2">Current Image:</p>
+                                                    <div className="w-40 h-32 rounded-lg overflow-hidden border border-gray-200 bg-gray-50 shadow-sm relative group">
+                                                        <img src={formData.image} alt="Current" className="w-full h-full object-cover" />
                                                     </div>
-                                                )}
+                                                </div>
+                                            )}
+
+                                            <div className="flex-grow w-full">
+                                                <p className="text-xs text-gray-500 mb-2">Upload New Image:</p>
+                                                <div className="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center bg-gray-50 hover:bg-white hover:border-orange-300 transition-colors h-32 flex flex-col justify-center items-center">
+                                                    <input
+                                                        type="file"
+                                                        onChange={handleFileChange}
+                                                        accept="image/*"
+                                                        className="hidden"
+                                                        id="file-upload"
+                                                    />
+                                                    <label htmlFor="file-upload" className="cursor-pointer flex flex-col items-center gap-2 w-full h-full justify-center">
+                                                        <Upload className="w-8 h-8 text-gray-400" />
+                                                        <span className="text-gray-600 font-medium">
+                                                            {selectedFile ? selectedFile.name : 'Click to upload specific image'}
+                                                        </span>
+                                                        <span className="text-xs text-gray-400">JPG, PNG, WEBP up to 5MB</span>
+                                                    </label>
+                                                </div>
                                             </div>
-                                        ) : (
-                                            <div className="border-2 border-dashed border-gray-200 rounded-xl p-8 text-center bg-gray-50 hover:bg-white hover:border-orange-300 transition-colors">
-                                                <input
-                                                    type="file"
-                                                    onChange={handleFileChange}
-                                                    accept="image/*"
-                                                    className="hidden"
-                                                    id="file-upload"
-                                                />
-                                                <label htmlFor="file-upload" className="cursor-pointer flex flex-col items-center gap-2">
-                                                    <Upload className="w-8 h-8 text-gray-400" />
-                                                    <span className="text-gray-600 font-medium">
-                                                        {selectedFile ? selectedFile.name : 'Click to upload image'}
-                                                    </span>
-                                                    <span className="text-xs text-gray-400">JPG, PNG, WEBP up to 5MB</span>
-                                                </label>
-                                            </div>
-                                        )}
+                                        </div>
                                     </div>
 
                                     {/* Date & Travel */}
@@ -713,7 +702,7 @@ const TirthYatraManagement = () => {
                                                 value={formData.date}
                                                 onChange={handleInputChange}
                                                 required
-                                                placeholder="e.g. 24th – 31st Oct 2025"
+                                                placeholder="e.g. 24th â€“ 31st Oct 2025"
                                                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all"
                                             />
                                         </div>
@@ -857,7 +846,7 @@ const TirthYatraManagement = () => {
                                                             </select>
                                                             <input
                                                                 type="number"
-                                                                placeholder="Price (₹)"
+                                                                placeholder="Price (â‚¹)"
                                                                 value={cls.price}
                                                                 onChange={(e) => updateClass(tIndex, cIndex, 'price', e.target.value)}
                                                                 className="w-full md:w-1/3 px-3 py-2 rounded-lg border border-gray-200 text-sm"
@@ -944,7 +933,7 @@ const TirthYatraManagement = () => {
                                                                     placeholder="Desc/Details"
                                                                     value={act.description}
                                                                     onChange={(e) => updateActivity(dIndex, aIndex, 'description', e.target.value)}
-                                                                    className="px-2 py-1 text-sm border rounded w-full"
+                                                                    className="px-2 py-1 text-sm border rounded w-full flex-grow"
                                                                 />
                                                                 <button type="button" onClick={() => removeActivity(dIndex, aIndex)} className="text-red-500"><X size={14} /></button>
                                                             </div>
@@ -979,7 +968,6 @@ const TirthYatraManagement = () => {
                                             </div>
                                         ))}
                                     </div>
-
                                     {/* Packages Section */}
                                     <div className="p-4 bg-gray-50 rounded-xl space-y-4 border border-gray-100">
                                         <div className="flex justify-between items-center">

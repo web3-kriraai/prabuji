@@ -55,7 +55,9 @@ exports.createTirthYatra = async (req, res) => {
             trainInfo, // JSON stringified from frontend
             itinerary,
             packages,
-            instructions
+            instructions,
+            includes,
+            excludes
         } = req.body;
 
         let image = req.body.image;
@@ -134,6 +136,10 @@ exports.createTirthYatra = async (req, res) => {
 // @access  Private/Admin
 exports.updateTirthYatra = async (req, res) => {
     try {
+        console.log(`[Update] Request for ID: ${req.params.id}`);
+        console.log('[Update] req.file:', req.file ? req.file.path : 'No file uploaded');
+        // console.log('[Update] req.body keys:', Object.keys(req.body)); // Log keys to see what's arriving
+
         let tirthYatra = await TirthYatra.findById(req.params.id);
         if (!tirthYatra) {
             return res.status(404).json({ msg: 'Tirth Yatra not found' });
@@ -143,25 +149,17 @@ exports.updateTirthYatra = async (req, res) => {
 
         // If file is uploaded, use its path.
         if (req.file) {
+            console.log('[Update] Updating image with new file path:', req.file.path);
             updateData.image = req.file.path;
         } else {
-            // Debug logging
-            console.log('Update Body Image:', req.body.image, 'Type:', typeof req.body.image);
-
             // Strictly sanitize image field
             // If it's not a string, or if it looks like an empty object string "{}" (just in case)
             if (typeof req.body.image !== 'string' || req.body.image === '{}') {
-                console.log('Sanitizing invalid image body (removing from updateData)');
+                // console.log('Sanitizing invalid image body (removing from updateData)');
                 delete updateData.image;
             } else if (req.body.image === undefined || req.body.image === null) {
                 delete updateData.image;
             }
-            // If it is a string (even empty), we let it pass?
-            // If empty string "", it might clear the image in DB.
-            // If the user didn't change it, frontend usually sends the OLD url.
-            // If frontend sends "", it might mean clear.
-            // But to avoid accidents with "uncontrolled inputs", maybe we should only update if length > 0?
-            // Let's assume valid string is fine.
         }
 
         // Helper to safely parse JSON and sanitize numeric fields recursively
@@ -208,9 +206,10 @@ exports.updateTirthYatra = async (req, res) => {
             { new: true }
         );
 
+        console.log('[Update] Success');
         res.json(tirthYatra);
     } catch (err) {
-        console.error('Error updating Tirth Yatra:', err);
+        console.error('Error updating Tirth Yatra (STACK):', err.stack); // Print full stack trace
         res.status(500).send('Server Error: ' + err.message);
     }
 };
